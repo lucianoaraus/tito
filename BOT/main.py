@@ -21,10 +21,10 @@ PATH_TO_CHROME_DRIVER = './chromedriver.exe'
 PATH_TO_EDGE_DRIVER = './msedgedriver.exe'
 
 # e-mail direction
-EMAIL = 'vignolo.hernan@gmail.com'
+EMAIL = '<email>'
 
 # Prenot@Mi password
-PASSWORD = 'Hernan6938'
+PASSWORD = '<pass>'
 
 # Preont@Mi web page URL
 PRENOTA_URL = 'https://prenotami.esteri.it/Language/ChangeLanguage?lang=2'
