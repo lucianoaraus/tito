@@ -9,10 +9,14 @@ except ModuleNotFoundError:
     # Once installed, import it
     import mechanize
 
+import configparser
 import time
 
 
 """ /*** URL AND USER DATA DEFINITION ***/ """
+
+config = configparser.Configparser()
+config.read('../user_data.ini')
 
 # Preont@Mi web page URL
 PRENOTA_URL = 'https://prenotami.esteri.it/Language/ChangeLanguage?lang=2'
