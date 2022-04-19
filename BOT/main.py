@@ -16,7 +16,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 # Path to the Chrome Driver
-PATH_TO_CHROME_DRIVER = './chromedriver.exe'
+PATH_TO_CHROME_DRIVER = 'C:/Users/hvign/Documents/jupyter_notebooks/Turnos_Ciudadania_Italiana/BOT/chromedriver.exe'
 # Path to the Edge Driver
 PATH_TO_EDGE_DRIVER = './msedgedriver.exe'
 
@@ -24,7 +24,7 @@ PATH_TO_EDGE_DRIVER = './msedgedriver.exe'
 EMAIL = '<email>'
 
 # Prenot@Mi password
-PASSWORD = '<pass>'
+PASSWORD = '<password>'
 
 # Preont@Mi web page URL
 PRENOTA_URL = 'https://prenotami.esteri.it/Language/ChangeLanguage?lang=2'
