@@ -59,11 +59,11 @@ br.click_link(text = 'Prenota')
 
 # Define the service link
 service_link = mechanize.Link(
-                                url      = '/Services/Booking/222',
+                                url      = '/Services/Booking/225',
                                 base_url = 'https://prenotami.esteri.it',
                                 text     = 'Prenota',
                                 tag      = 'a',
-                                attrs    = {'href' : '/Services/Booking/222'}
+                                attrs    = {'href' : '/Services/Booking/225'}
                             )
 
 # Click in the link
@@ -72,33 +72,39 @@ br.follow_link(link = service_link)
 # Select the main form
 br.form = br.forms()[1]
 
+#for i, v in enumerate(br.form.controls):
+#    print('{} - {}'.format(i, v))
+
 # Disable read only property
 br.form.set_all_readonly(False)
 
+br.form.controls[11].selected = True
+
 # Set the AVO's name
-br.form.find_control(type = 'hidden', nr = 11).value = 'AVO NAME'
+#br.form.find_control(type = 'hidden', nr = 11).value = 'AVO NAME'
 
 # Set the birth place
-br.form.find_control(type = 'hidden', nr = 15).value = 'PLACE OF BIRTH'
+#br.form.find_control(type = 'hidden', nr = 15).value = 'PLACE OF BIRTH'
 
 # Set the AVO's birth date
-br.form.find_control(type = 'hidden', nr = 19).value = '01/01/1950'
+#br.form.find_control(type = 'hidden', nr = 19).value = '01/01/1950'
 
 # Set the AVO's address
-br.form.find_control(type = 'hidden', nr = 23).value = 'AVO ADDRESS'
+#br.form.find_control(type = 'hidden', nr = 23).value = 'AVO ADDRESS'
 
 # Additional notes
-br.form.controls[26].value = 'NOTES'
+#br.form.controls[26].value = 'NOTES'
 
 # Checkbox
-br.form.controls[27].selected = True
+#br.form.controls[27].selected = True
 
 #for i, v in enumerate(br.form.controls):
 #    print('{} - {}'.format(i, v))
 
 res = br.submit()
 
-#print(br.viewing_html())
+br.open(res.geturl())
+print(br.title())
 
 try:
     # Import Selenium if installed
