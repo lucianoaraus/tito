@@ -93,8 +93,23 @@ br.form.controls[26].value = 'NOTES'
 # Checkbox
 br.form.controls[27].selected = True
 
-for i, v in enumerate(br.form.controls):
-    print('{} - {}'.format(i, v))
+#for i, v in enumerate(br.form.controls):
+#    print('{} - {}'.format(i, v))
 
 res = br.submit()
-print(res.getcode())
+
+#print(br.viewing_html())
+
+try:
+    # Import Selenium if installed
+    import lxml.html as lh
+except ModuleNotFoundError:
+    # If not installed, install it via pip
+    import pip
+    pip.main(['install', 'lxml'])
+    
+    # Once installed, import it
+    import lxml.html as lh
+
+with open('response.html', 'w+') as f:
+    f.write(res.read().decode('utf-8'))
