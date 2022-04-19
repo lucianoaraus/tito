@@ -13,22 +13,25 @@ import configparser
 import time
 
 
+
 """ /*** URL AND USER DATA DEFINITION ***/ """
 
+# Read data from .ini file
 config = configparser.ConfigParser()
 config.read('user_data.ini')
-print(config['PRENOTAMI_DATA'])
+
 # Preont@Mi web page URL
-PRENOTA_URL = 'https://prenotami.esteri.it/Language/ChangeLanguage?lang=2'
+PRENOTA_URL = config['PRENOTAMI_DATA']['url']
 
 # Prenot@Mi e-mail
-EMAIL = '<email>'
+EMAIL = config['PRENOTAMI_DATA']['email']
 
 # Prenot@Mi password
-PASSWORD = '<password>'
+PASSWORD = config['PRENOTAMI_DATA']['pass']
 
 
-""" /*** LOGIN ***/ """
+
+""" /*** PERFORM LOGIN ***/ """
 
 # Instantiate a browser
 br = mechanize.Browser()
@@ -44,8 +47,6 @@ br.set_value(name = 'Email', value = EMAIL)
 
 # Input the password
 br.set_value(name = 'Password', value = PASSWORD)
-
-#print(br.submit().geturl())
 
 # Submit the form
 br.submit()
