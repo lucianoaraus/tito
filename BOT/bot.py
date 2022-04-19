@@ -15,9 +15,9 @@ import time
 
 """ /*** URL AND USER DATA DEFINITION ***/ """
 
-config = configparser.Configparser()
-config.read('../user_data.ini')
-
+config = configparser.ConfigParser()
+config.read('user_data.ini')
+print(config['PRENOTAMI_DATA'])
 # Preont@Mi web page URL
 PRENOTA_URL = 'https://prenotami.esteri.it/Language/ChangeLanguage?lang=2'
 
