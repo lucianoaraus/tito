@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     # Create the instance of the browser
     browser = Browser(PATH_TO_DRIVER = PATH_TO_CHROME_DRIVER)
-    
+
     # Get the URL
     browser.get_url(url = PRENOTA_URL)
 
@@ -41,8 +41,8 @@ if __name__ == "__main__":
 
     # Click on book tab
     browser.find_and_click(by = 'LINK_TEXT', value = 'Prenota', click = True)
-    time.sleep(5)
+    time.sleep(1)
 
     # Click on the service
     browser.find_and_click(by = 'XPATH', value = '//*[@id="dataTableServices"]/tbody/tr[4]/td[4]/a', click = True)
-    time.sleep(5)
+    time.sleep(1)

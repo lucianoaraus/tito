@@ -39,7 +39,7 @@ class Browser:
             self.options = self.set_options()
 
             # Create the driver instance
-            self.driver = webdriver.Chrome(executable_path = PATH_TO_CHROME_DRIVER, options = self.options)
+            self.driver = webdriver.Chrome(executable_path = PATH_TO_DRIVER, options = self.options)
 
             # Avoid detection
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -91,12 +91,13 @@ class Browser:
         
         return opt
 
-    def get_url(url = ''):
-        if not isinstance(url, str) or url == '':
+    def get_url(self, url = ''):
+        self.url = url
+        if not isinstance(self.url, str) or self.url == '':
             print("Path to drive must be a not empty string")
             sys.exit()
-        
-        self.driver.get(url = url)
+
+        self.driver.get(url = self.url)
         return
     
     def find_and_click(self, by = '', value = '', click = False):
