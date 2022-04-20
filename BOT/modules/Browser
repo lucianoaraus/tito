@@ -111,14 +111,14 @@ class Browser:
         
         if by.lower() == 'id':
             self.driver.find_element(by = By.ID, value = value).click()
-        else if by.lower() == 'link_text':
+        elif by.lower() == 'link_text':
             self.driver.find_element(by = By.LINK_TEXT, value = value).click()
-        else if by.lower() == 'xpath':
+        elif by.lower() == 'xpath':
             self.driver.find_element(by = By.XPATH, value = value).click()
         
         return
 
-    def find_complete_submit(self, by = '', value = '', keys = '',submit = False):
+    def find_complete_submit(self, by = '', value = '', keys = '', submit = False):
         
         if not isinstance(by, str) or by == '':
             print("By must be a not empty string")
@@ -133,11 +133,22 @@ class Browser:
             sys.exit()
         
         if by.lower() == 'id':
-            if isinstance(keys, str):
-                self.driver.find_element(by = By.ID, value = value).send_keys(keys)
-            else:
+            if  isinstance(keys, str):
+                element = self.driver.find_element(by = By.ID, value = value).send_keys(keys)
+                if submit == True:
+                    element.submit()
+                    return
+                elif submit == False:
+                    return
+            elif isinstance(keys, list):
                 element = self.driver.find_element(by = By.ID, value = value)
                 element.send_keys(keys[0])
-                element.send_keys(keys[1])
-        
+                if keys[1].lower() == 'return':
+                    element.send_keys(Keys.RETURN)
+
+                if submit == True:
+                    element.submit()
+                    return
+                elif submit == False:
+                    return
         return
