@@ -9,26 +9,33 @@ except ModuleNotFoundError:
     # Once installed, import it
     from selenium import webdriver
 
-# Import another useful classes
+# Libraries for handling configuration and time
+import configparser
+import time
+import os
+
+# Selenium useful modules
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-import time
 
 # Path to the Chrome Driver
-PATH_TO_CHROME_DRIVER = 'C:/Users/hvign/Documents/jupyter_notebooks/Turnos_Ciudadania_Italiana/BOT/chromedriver.exe'
-# Path to the Edge Driver
-PATH_TO_EDGE_DRIVER = './msedgedriver.exe'
+PATH_TO_CHROME_DRIVER = 'chromedriver.exe'
 
-# e-mail direction
-EMAIL = '<email>'
+# Read data from .ini file
+config = configparser.ConfigParser()
+config.read('user_data.ini')
 
-# Prenot@Mi password
-PASSWORD = '<password>'
+print(os.getcwd())
 
 # Preont@Mi web page URL
-PRENOTA_URL = 'https://prenotami.esteri.it/Language/ChangeLanguage?lang=2'
+PRENOTA_URL = config['PRENOTAMI_DATA']['url']
 
+# Prenot@Mi e-mail
+EMAIL = config['PRENOTAMI_DATA']['email']
+
+# Prenot@Mi password
+PASSWORD = config['PRENOTAMI_DATA']['pass']
 
 # Set a random user agent in order to avoid captcha
 opt = webdriver.ChromeOptions()
