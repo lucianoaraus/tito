@@ -31,10 +31,10 @@ if __name__ == "__main__":
     browser.get_url(url = PRENOTA_URL)
 
     # Search for the e-mail field of the main form and complete it
-    browser.find_complete_submit(by = 'ID', value = 'login-email', keys = EMAIL)
+    browser.find_fill_submit(by = 'ID', value = 'login-email', keys = EMAIL)
 
     # Search for the pass field of the main form, complete it and submit it
-    browser.find_complete_submit(by = 'ID', value = 'login-password', keys = [PASSWORD, 'RETURN'])
+    browser.find_fill_submit(by = 'ID', value = 'login-password', keys = [PASSWORD, 'RETURN'])
 
     # Once submitted, wait
     time.sleep(5)

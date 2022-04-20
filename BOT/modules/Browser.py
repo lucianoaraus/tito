@@ -119,7 +119,7 @@ class Browser:
         
         return
 
-    def find_complete_submit(self, by = '', value = '', keys = '', submit = False):
+    def find_fill_submit(self, by = '', value = '', keys = '', submit = False):
         
         if not isinstance(by, str) or by == '':
             print("By must be a not empty string")
