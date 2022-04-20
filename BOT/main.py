@@ -3,63 +3,6 @@ import configparser
 import time
 import os
 
-# Libraries to execute command-line processes
-import subprocess
-import sys
-
-# This function installs a package
-def install(package, root = False):
-    if root == True:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package, '--user'])
-    else:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-    
-    return
-
-try:
-    # Import Selenium if installed
-    from selenium import webdriver
-except ModuleNotFoundError:
-    # If not installed, install it via pip
-    install('selenium', True)
-    
-    # Once installed, import it
-    from selenium import webdriver
-
-try:
-    from fp.fp import FreeProxy
-except ModuleNotFoundError:
-    # If not installed, install it via pip
-    install('free-proxy')
-    
-    # Once installed, import it
-    from fp.fp import FreeProxy
-
-try:
-    from fake_useragent import UserAgent
-except ModuleNotFoundError:
-    # If not installed, install it via pip
-    install('fake_useragent')
-    
-    # Once installed, import it
-    from fake_useragent import UserAgent
-
-try:
-    import undetected_chromedriver as uc
-except ModuleNotFoundError:
-    # If not installed, install it via pip
-    install('undetected-chromedriver')
-    
-    # Once installed, import it
-    import undetected_chromedriver as uc
-
-# Selenium useful modules
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-import numpy as np
-
 # Function used to retrieve a random proxy IP address
 def get_random_proxy():
     # Random countries list
