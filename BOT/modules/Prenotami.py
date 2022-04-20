@@ -7,7 +7,7 @@ class Prenotami:
         name = name.lower()
         if not isinstance(name, str) or name == '':
             return None
-        else if name not in self.services:
+        elif name not in self.services:
             return None
         else:
             self.service_name = name
