@@ -184,7 +184,8 @@ class Browser:
             locator = (By.LINK_TEXT, value)
         elif by.lower() == 'xpath':
             locator = (By.XPATH, value)
-        return
+        else:
+            return
         
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(locator))
         return
