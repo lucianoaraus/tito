@@ -1,5 +1,5 @@
 # Load installer class
-from . import Installer
+import Installer
 
 try:
     # Import Selenium if installed
@@ -27,6 +27,7 @@ from fake_useragent import UserAgent
 # Simplified class to perform scrapping
 class Browser:
 
+    # Constructor of the browser handler
     def __init__(self, PATH_TO_DRIVER = ''):
         if not isinstance(PATH_TO_DRIVER, str) or PATH_TO_DRIVER == '':
             print("Path to drive must be a not empty string")
@@ -36,7 +37,7 @@ class Browser:
             self.PATH_TO_DRIVER = PATH_TO_DRIVER
 
             # Set the options to avoid detection
-            self.options = self.set_options()
+            self.options = self.__set_options()
 
             # Create the driver instance
             self.driver = webdriver.Chrome(executable_path = PATH_TO_DRIVER, options = self.options)
@@ -55,14 +56,15 @@ class Browser:
             self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent" : self.user_agent})
         return
 
-    def set_options(self):
+    # Define options of the browser in order to avoid detection
+    def __set_options(self):
         # Set a random user agent in order to avoid captcha
         self.user_agent = UserAgent().random
 
         # Instantiate a options object of Chrome
         opt = webdriver.ChromeOptions()
         
-        # Set some options in order to avoid bot detection
+        # Set some options
         opt.add_argument('--start-maximized')
         #opt.add_argument('--single-process')
         opt.add_argument('--incognito')
@@ -91,6 +93,7 @@ class Browser:
         
         return opt
 
+    # Go to specific URL
     def get_url(self, url = ''):
         self.url = url
         if not isinstance(self.url, str) or self.url == '':
@@ -100,6 +103,7 @@ class Browser:
         self.driver.get(url = self.url)
         return
     
+    # Find a HTML element, then click on it
     def find_and_click(self, by = '', value = '', click = False):
         
         if not isinstance(by, str) or by == '':
@@ -119,6 +123,7 @@ class Browser:
         
         return
 
+    # Find a HTML element, fill it with text, then submit
     def find_fill_submit(self, by = '', value = '', keys = '', submit = False):
         
         if not isinstance(by, str) or by == '':
