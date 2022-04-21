@@ -37,7 +37,7 @@ class PrenotamiWebPage:
     def get_locator(self, name = ''):
         self.__check_args(name, str)
         self._service_name = name.lower()
-        print(self._locators[name])
+
         if name not in self._locators.keys():
             print('Name is wrong')
             sys.exit()
