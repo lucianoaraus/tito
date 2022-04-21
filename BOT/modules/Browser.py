@@ -43,26 +43,26 @@ class Browser:
         self.__check_args(undetectable, bool)
 
         # Path to the Chrome driver
-        self.PATH_TO_DRIVER = PATH_TO_DRIVER
+        self._PATH_TO_DRIVER = PATH_TO_DRIVER
 
         # Undetectable flag
-        self.undetectable = undetectable
+        self._undetectable = undetectable
 
         # Set the options to avoid detection
-        self.options = self.__set_options()
+        self._options = self.__set_options()
 
         # Create the driver instance
         if undetectable == False:
             # Set the driver
-            self.driver = webdriver.Chrome(executable_path = PATH_TO_DRIVER, options = self.options)
+            self._driver = webdriver.Chrome(executable_path = self._PATH_TO_DRIVER, options = self._options)
         else:
             # Set the driver
-            self.driver = uc.Chrome(options = self.options)
+            self._driver = uc.Chrome(options = self._options)
 
         # Avoid detection
-        self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+        self._driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
-        self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+        self._driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
                                                                                 "source":
                                                                                 "const newProto = navigator.__proto__;"
                                                                                 "delete newProto.webdriver;"
@@ -70,15 +70,15 @@ class Browser:
                                                                             }
                                     )
 
-        self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent" : self.user_agent})
+        self._driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent" : self._user_agent})
         return
 
     # Define options of the browser in order to avoid detection
     def __set_options(self):
         # Set a random user agent in order to avoid captcha
-        self.user_agent = UserAgent().random
+        self._user_agent = UserAgent().random
 
-        if self.undetectable == True:
+        if self._undetectable == True:
             return uc.ChromeOptions()
         else:
             # Instantiate a options object of Chrome
@@ -109,18 +109,18 @@ class Browser:
             opt.add_experimental_option('useAutomationExtension', False)
             opt.add_experimental_option('excludeSwitches', ['enable-automation'])
             opt.add_argument('--disable-infobars')
-            opt.add_argument('--user-agent={}'.format(self.user_agent))
+            opt.add_argument('--user-agent={}'.format(self._user_agent))
             return opt
 
     # Find and HTML element
     def __find_element(self, by = '', value = ''):
         self.__wait_element_load(by = by, value = value)
         if by.lower() == 'id':
-            return self.driver.find_element(by = By.ID, value = value)
+            return self._driver.find_element(by = By.ID, value = value)
         elif by.lower() == 'link_text':
-            return self.driver.find_element(by = By.LINK_TEXT, value = value)
+            return self._driver.find_element(by = By.LINK_TEXT, value = value)
         elif by.lower() == 'xpath':
-            return self.driver.find_element(by = By.XPATH, value = value)
+            return self._driver.find_element(by = By.XPATH, value = value)
         return
     
     # Validate arguments
@@ -139,10 +139,10 @@ class Browser:
         return
 
     # Go to specific URL
-    def get_url(self, url = ''):
+    def go_to(self, url = ''):
         self.__check_args(url, str)
-        self.url = url
-        self.driver.get(url = self.url)
+        self._url = url
+        self._driver.get(url = self._url)
         return
 
     # Find and click a HTML element
@@ -170,8 +170,7 @@ class Browser:
         if submit == True:
             element.submit()
             return
-        elif submit == False:
-            return
+
         return
 
     def __wait_element_load(self, by = '', value = ''):
@@ -187,5 +186,5 @@ class Browser:
         else:
             return
         
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(locator))
+        WebDriverWait(self._driver, 10).until(EC.presence_of_element_located(locator))
         return

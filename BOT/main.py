@@ -3,7 +3,7 @@ import configparser
 import time
 import os
 
-# Class to handle web scrapping
+# Import all modules
 from modules import *
 
 if __name__ == "__main__":
@@ -13,9 +13,6 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read(os.path.join(os.getcwd(), 'user_data.ini'))
     
-    # Preont@Mi web page URL
-    PRENOTA_URL = config['PRENOTAMI_DATA']['url']
-
     # Prenot@Mi e-mail
     EMAIL = config['PRENOTAMI_DATA']['email']
 
@@ -31,21 +28,41 @@ if __name__ == "__main__":
     # Create the instance of the browser
     browser = Browser(PATH_TO_DRIVER = PATH_TO_CHROME_DRIVER)
 
+    # Create the Web Page object to retrieve locators
+    web_page = PrenotamiWebPage(service = 'reconstruction')
+
     # Get the URL
-    browser.get_url(url = PRENOTA_URL)
+    browser.go_to(url = web_page.get_url())
     
-    # Search for the e-mail field of the main form and complete it
-    browser.find_fill_submit(by = 'ID', value = 'login-email', keys = EMAIL)
+    # Locate login form
+    loc = web_page.get_locator('login')
+    
+    # Search for the e-mail field and fill it
+    browser.find_fill_submit(by = loc['BY'], value = loc['LOGIN_EMAIL'], keys = EMAIL)
 
-    # Search for the pass field of the main form, complete it and submit it
-    browser.find_fill_submit(by = 'ID', value = 'login-password', keys = [PASSWORD, 'RETURN'])
+    # Search for the pass field, fill it and submit the form
+    browser.find_fill_submit(by = loc['BY'], value = loc['LOGIN_PASSWORD'], keys = [PASSWORD, 'RETURN'])
 
+    # Delete the variable
+    del(loc)
 
 
     """/*** GO TO BOOK SECTION AND CLICK ON THE SERVICE ***/"""
+    # Locate book link
+    loc = web_page.get_locator('user_area')
+
     # Click on book tab
-    browser.find_and_click(by = 'LINK_TEXT', value = 'Prenota')
+    browser.find_and_click(by = loc['BY'], value = loc['USERAREA_PRENOTA'])
+
+    del(loc)
+
+    # Locate 
+    loc = web_page.get_locator('direct_son')
 
     # Click on the service
-    browser.find_and_click(by = 'XPATH', value = '//*[@id="dataTableServices"]/tbody/tr[4]/td[4]/a/button')
+    browser.find_and_click(by = loc['BY'], value = loc['SERVICE_BUTTON'])
+    
+
+
+    """/*** FILL THE FORM AND SUBMIT ***/"""
     time.sleep(5)
