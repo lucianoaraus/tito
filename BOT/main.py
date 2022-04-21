@@ -4,14 +4,15 @@ import time
 import os
 
 # Class to handle web scrapping
-from modules import Browser
+from modules import *
 
 if __name__ == "__main__":
     
+    """/*** USER DATA FROM INI FILE ***/"""
     # Read data from .ini file
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.getcwd(), 'BOT', 'user_data.ini'))
-
+    config.read(os.path.join(os.getcwd(), 'user_data.ini'))
+    
     # Preont@Mi web page URL
     PRENOTA_URL = config['PRENOTAMI_DATA']['url']
 
@@ -22,27 +23,29 @@ if __name__ == "__main__":
     PASSWORD = config['PRENOTAMI_DATA']['pass']
 
     # Path to the Chrome Driver
-    PATH_TO_CHROME_DRIVER = os.path.join(os.getcwd(), 'BOT', 'chromedriver.exe')
+    PATH_TO_CHROME_DRIVER = os.path.join(os.getcwd(), 'chromedriver.exe')
 
+
+    
+    """/*** GET INTO PRENOTAMI WEBPAGE AND LOGIN ***/"""
     # Create the instance of the browser
     browser = Browser(PATH_TO_DRIVER = PATH_TO_CHROME_DRIVER)
 
     # Get the URL
     browser.get_url(url = PRENOTA_URL)
-
+    
     # Search for the e-mail field of the main form and complete it
     browser.find_fill_submit(by = 'ID', value = 'login-email', keys = EMAIL)
 
     # Search for the pass field of the main form, complete it and submit it
     browser.find_fill_submit(by = 'ID', value = 'login-password', keys = [PASSWORD, 'RETURN'])
 
-    # Once submitted, wait
-    time.sleep(5)
 
+
+    """/*** GO TO BOOK SECTION AND CLICK ON THE SERVICE ***/"""
     # Click on book tab
-    browser.find_and_click(by = 'LINK_TEXT', value = 'Prenota', click = True)
-    time.sleep(1)
+    browser.find_and_click(by = 'LINK_TEXT', value = 'Prenota')
 
     # Click on the service
-    browser.find_and_click(by = 'XPATH', value = '//*[@id="dataTableServices"]/tbody/tr[4]/td[4]/a', click = True)
-    time.sleep(1)
+    browser.find_and_click(by = 'XPATH', value = '//*[@id="dataTableServices"]/tbody/tr[4]/td[4]/a/button')
+    time.sleep(5)
