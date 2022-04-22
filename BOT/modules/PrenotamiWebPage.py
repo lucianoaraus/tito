@@ -5,7 +5,7 @@ class PrenotamiWebPage:
 
         self.__check_args(service, str)
         self._url = 'https://prenotami.esteri.it/Language/ChangeLanguage?lang=2'
-        self._services = ['direct_son', 'reconstruction', 'passport']
+        self._services = ['direct_son', 'reconstruction', 'passport', 'notarial']
 
         if service not in self._services:
             print('Please, enter a valid service name.')
@@ -48,6 +48,22 @@ class PrenotamiWebPage:
                                             'CHECKBOX'       : '//*[@id="PrivacyCheck"]',
                                             'SUBMIT'         : '//*[@id="btnAvanti"]'
                                         },
+                            
+                            'calendar' : {
+                                            'BY'         : 'XPATH', # How to locate the elements
+                                            'FORWARD'    : '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/thead/tr[1]/th[3]/span',
+                                            'BACKWARD'   : '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/thead/tr[1]/th[1]/span',
+                                            'MONTH'      : '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/thead/tr[1]/th[2]',
+                                            'GREEN_DAYS' : 'day availableDay' # The class name of the green days in the calendar
+                                        },
+                            
+                            'notarial' : {
+                                            'BY'             : 'XPATH', # How to locate the elements
+                                            'SERVICE_BUTTON' : '//*[@id="dataTableServices"]/tbody/tr[4]/td[4]/a/button',
+                                            'NOTES'          : '//*[@id="BookingNotes"]',
+                                            'CHECKBOX'       : '//*[@id="PrivacyCheck"]',
+                                            'SUBMIT'         : '//*[@id="btnAvanti"]'
+                                        }
                         }
         return
 

@@ -52,6 +52,8 @@ class Browser:
     ----------
     url : str
         - The URL, including protocol.
+    wait_time : int
+        - Number of seconds to wait for an HTML is loaded.
 
     Methods
     -------
@@ -89,6 +91,9 @@ class Browser:
 
         # Set the options to avoid detection
         self._options = self.__set_options()
+
+        # Set the wait time
+        self.wait_time = 15
 
         # Create the driver instance
         if undetectable == False:
@@ -162,19 +167,46 @@ class Browser:
         ----------
         by : str
             - How will Selenium search for the element.
-            - Possible values: id, link_text, xpath.
+            - Possible values: id, link_text, xpath, class_name.
             
         value : str
             - HTML parameter to find the element.
         """
 
         self.__wait_element_load(by = by, value = value)
+
         if by.lower() == 'id':
             return self._driver.find_element(by = By.ID, value = value)
         elif by.lower() == 'link_text':
             return self._driver.find_element(by = By.LINK_TEXT, value = value)
         elif by.lower() == 'xpath':
             return self._driver.find_element(by = By.XPATH, value = value)
+        elif by.lower() == 'class_name':
+            return self._driver.find_element(by = By.CLASS_NAME, value = value)
+        return
+
+    # Find more than one element
+    def find_elements(self, by:str = '', value:str = '') -> object:
+        """Finds various HTML elements in a website.
+        
+        Parameters
+        ----------
+        by : str
+            - How will Selenium search for the elements.
+            - Possible values: xpath, class_name.
+            
+        value : str
+            - HTML parameter to find the elements.
+        """        
+        self.__wait_element_load(by = by, value = value)
+        self.__check_args(by, str)
+        self.__check_args(value, str)
+
+        if by.lower() == 'class_name':
+            return self._driver.find_elements_by_class_name(value)
+        elif by.lower() == 'xpath':
+            return self._driver.find_elements_by_xpath(value)
+
         return
     
     # Validate arguments
@@ -271,7 +303,7 @@ class Browser:
         Parameters
         ----------
         by : str
-            - How will Selenium search for the element. Possible values: id, link_text, xpath
+            - How will Selenium search for the element. Possible values: id, link_text, xpath, class_name
         value : str
             - HTML parameter to find the element.
         """
@@ -284,10 +316,12 @@ class Browser:
             locator = (By.LINK_TEXT, value)
         elif by.lower() == 'xpath':
             locator = (By.XPATH, value)
+        elif by.lower() == 'class_name':
+            locator = (By.CLASS_NAME, value)
         else:
             return
-        
-        WebDriverWait(self._driver, 10).until(EC.presence_of_element_located(locator))
+
+        WebDriverWait(self._driver, self.wait_time).until(EC.presence_of_element_located(locator))
         return
     
     def handle_popup(self, action:str = '', keys:str = '') -> None:
@@ -306,7 +340,7 @@ class Browser:
         """
         
         # Wait until the popup shows
-        WebDriverWait(self._driver, 10).until(EC.alert_is_present())
+        WebDriverWait(self._driver, self.wait_time).until(EC.alert_is_present())
         
         # Lowercase
         action = action.lower()

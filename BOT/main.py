@@ -79,10 +79,13 @@ if __name__ == "__main__":
 
 
     """/*** FILL THE FORM AND SUBMIT ***/"""
-
+    
     # Fill the form with the specified data
     for field in FORM_DATA:
-        browser.find_fill_submit(by = loc['BY'], value = loc[field.upper()], keys = FORM_DATA[field])
+        try:
+            browser.find_fill_submit(by = loc['BY'], value = loc[field.upper()], keys = FORM_DATA[field])
+        except:
+            continue
 
     # Check the terms and conditions
     browser.find_and_click(by = loc['BY'], value = loc['CHECKBOX'])
@@ -98,6 +101,49 @@ if __name__ == "__main__":
 
 
 
-    """/*** CALENDAR SECTION ***/"""
+    """/*** CALENDAR SECTION: FIND AN AVAILABLE DAY AND BOOK ***/"""
+
+    # Locate the calendar buttons: backwards, month and forward
+    loc = web_page.get_locator('calendar')
+
+    # Flag to indicate whether is any day available in the month or no
+    no_available_days = True
+
+    # Initialize assuming no green days available
+    green_days = []
+
+    # Iterate the calendar until find and available day
+    while no_available_days:
+        #green_days = browser.find_and_click(by = 'class_name', value = loc['GREEN_DAYS'])
+        table = browser.find_elements(by = 'XPATH', value = '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/tbody')[0]
+        if isinstance(table, object):
+            # POR ALGUN MOTIVO NO ESTA ENCONTRANDO EL ELEMENTO
+            browser.find_elements(by = 'class_name', value = loc['GREEN_DAYS'])
+            print('Hola')
+        sys.exit()
+
+        try:
+            # Find all the available days in a month
+            green_days = browser.find_elements(by = 'class_name', value = loc['GREEN_DAYS'])
+        except:
+            pass
+        
+        # Look at the month
+        month = browser.find_elements(by = 'XPATH', value = loc['MONTH'])[0].text[:-5]
+
+        print(len(green_days))
+
+        # Logic to walk around the months
+        if len(green_days) == 0:
+            if month == 'dicembre':
+                # No available days in the year
+                no_available_days = False
+            else:
+                # Continue searching for available days in next month
+                browser.find_and_click(by = loc['BY'], value = loc['FORWARD'])
+                continue
+        else:
+            print(green_days)
+            break
 
     time.sleep(5)
