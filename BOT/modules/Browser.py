@@ -36,9 +36,48 @@ from fake_useragent import UserAgent
 
 # Simplified class to perform scrapping
 class Browser:
+    """
+    Browser Handler \n
+    This class allows to friendly interact with any website via Selenium.
+
+    Parameters
+    ----------
+    PATH_TO_DRIVER : str
+        - Path to the browser driver.
+        
+    undetectable : bool
+        - Flag to switch to undetectable mode if needed.
+    
+    Attributes
+    ----------
+    url : str
+        - The URL, including protocol.
+
+    Methods
+    -------
+        go_to(url='')
+        Redirects to the specified URL.
+
+        find_and_click(by='', value='')
+        Finds a HTML element, then click on it.
+            
+        find_fill_submit(by='', value='', keys='', submit=False)
+        Finds a HTML element, fill it with text and submit it (if it's a form).
+    """
 
     # Constructor of the browser handler
-    def __init__(self, PATH_TO_DRIVER = '', undetectable = False):
+    def __init__(self, PATH_TO_DRIVER:str = '', undetectable:bool = False) -> None:
+        """Constructor of the class
+
+        Parameters
+        ----------
+            PATH_TO_DRIVER : str
+            Path to the browser driver
+            
+            undetectable : bool
+            Flag to switch to undetectable mode if needed
+        """
+
         self.__check_args(PATH_TO_DRIVER, str)
         self.__check_args(undetectable, bool)
 
@@ -74,7 +113,10 @@ class Browser:
         return
 
     # Define options of the browser in order to avoid detection
-    def __set_options(self):
+    def __set_options(self) -> object:
+        """Set the browser options in order to avoid detection
+        """
+
         # Set a random user agent in order to avoid captcha
         self._user_agent = UserAgent().random
 
@@ -113,7 +155,19 @@ class Browser:
             return opt
 
     # Find and HTML element
-    def __find_element(self, by = '', value = ''):
+    def __find_element(self, by:str = '', value:str = '') -> object:
+        """Finds a HTML element in a website.
+        
+        Parameters
+        ----------
+        by : str
+            - How will Selenium search for the element.
+            - Possible values: id, link_text, xpath.
+            
+        value : str
+            - HTML parameter to find the element.
+        """
+
         self.__wait_element_load(by = by, value = value)
         if by.lower() == 'id':
             return self._driver.find_element(by = By.ID, value = value)
@@ -124,7 +178,16 @@ class Browser:
         return
     
     # Validate arguments
-    def __check_args(self, args = '', instance = ''):
+    def __check_args(self, args:str = '', instance:[object, list] = '') -> None:
+        """Method to validate arguments
+        
+        Parameters
+        ----------
+        args : str
+            - Argument to check
+        instance : object or list
+            - Instance for checking
+        """
         if isinstance(instance, list):
             for i in instance:
                 if not isinstance(args, i) or args == '':
@@ -139,21 +202,49 @@ class Browser:
         return
 
     # Go to specific URL
-    def go_to(self, url = ''):
+    def go_to(self, url:str = '') -> None:
+        """Redirects to specified URL.\n
+        If the argument ``url`` is not a string or it's empty, the scripts ends.
+
+        Parameters
+        ----------
+        url : str
+            - The URL to redirect, including protocol.
+        """
         self.__check_args(url, str)
         self._url = url
         self._driver.get(url = self._url)
         return
 
     # Find and click a HTML element
-    def find_and_click(self, by = '', value = ''):
+    def find_and_click(self, by:str = '', value:str = '') -> None:
+        """Find a HTML element and click on it.\n
+        If the arguments ``by`` or ``value`` is not a string or it's empty, the scripts ends.
+
+        Parameters
+        ----------
+        by : str
+            - How will Selenium search for the element. Possible values: id, link_text, xpath
+        value : str
+            - HTML parameter to find the element.
+        """
         self.__check_args(by, str)
         self.__check_args(value, str)
         self.__find_element(by = by, value = value).click()
         return
 
     # Find a HTML element, fill it with text, then submit
-    def find_fill_submit(self, by = '', value = '', keys = '', submit = False):
+    def find_fill_submit(self, by:str = '', value:str = '', keys:[str, list] = '', submit:bool = False) -> None:
+        """Find a HTML element, fill it with text and submit (if it's a form). \n
+        If the arguments ``by`` or ``value`` aren't strings or are empty, the scripts ends.
+
+        Parameters
+        ----------
+        by : str
+            - How will Selenium search for the element. Possible values: id, link_text, xpath
+        value : str
+            - HTML parameter to find the element.
+        """
         self.__check_args(by, str)
         self.__check_args(value, str)
         self.__check_args(keys, (str, list))
@@ -173,7 +264,17 @@ class Browser:
 
         return
 
-    def __wait_element_load(self, by = '', value = ''):
+    def __wait_element_load(self, by:str = '', value:str = '') -> None:
+        """Wait until a HTML element is loaded. \n
+        If the arguments ``by`` or ``value`` aren't strings or are empty, the scripts ends.
+
+        Parameters
+        ----------
+        by : str
+            - How will Selenium search for the element. Possible values: id, link_text, xpath
+        value : str
+            - HTML parameter to find the element.
+        """
         self.__check_args(by, str)
         self.__check_args(value, str)
 
@@ -188,3 +289,51 @@ class Browser:
         
         WebDriverWait(self._driver, 10).until(EC.presence_of_element_located(locator))
         return
+    
+    def handle_popup(self, action:str = '', keys:str = '') -> None:
+        """Handles a popup. \n
+        If the argument ``action`` isn't a string or is empty, the scripts ends.
+
+        Parameters
+        ----------
+        action : str
+            - The action to take. 
+            - Possible values: *accept*, *dissmiss*, *get_text*, *send_keys*
+            - If takes the value *send_keys*, ``keys`` must be pass.
+        keys : str
+            - The string to fill the popup
+            - Used only if ``action`` = 'send_keys'
+        """
+        
+        # Wait until the popup shows
+        WebDriverWait(self._driver, 10).until(EC.alert_is_present())
+        
+        # Lowercase
+        action = action.lower()
+        keys = keys.lower()
+
+        # All posible values for the action
+        values = ['accept', 'dissmiss', 'get_text', 'send_keys']
+
+        # Validate argument
+        self.__check_args(action, str)
+        
+        # If invalid parameter is passed, shut down
+        if action not in values:
+            self.__check_args()
+        elif action == 'send_keys':
+            self.__check_args(keys, str)
+
+        # Perform the action
+        if action == 'accept':
+            self._driver.switch_to.alert.accept()
+            return
+        elif action == 'dismiss':
+            self._driver.switch_to.alert.dismiss()
+            return
+        elif action == 'get_text':
+            return self._driver.switch_to.alert.text
+        elif action == 'send_keys':
+            self._driver.switch_to.alert.send_keys(keys)
+            self._driver.switch_to.alert.accept()
+            return
