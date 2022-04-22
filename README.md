@@ -1,2 +1,2 @@
-# tito bot 
-tito is a bot used to book a day for retrieving italian citizenship (by any method) and passport request at Prenot@Mi website.
+# bot-tito
+tito is a bot used to book a day to request italian citizenship (by any method) or passport at Prenot@Mi website.
