@@ -96,4 +96,8 @@ if __name__ == "__main__":
     # Delete the variable
     del(loc)
 
+
+
+    """/*** CALENDAR SECTION ***/"""
+
     time.sleep(5)
