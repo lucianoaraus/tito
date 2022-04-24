@@ -186,7 +186,7 @@ class Browser:
         return
 
     # Find more than one element
-    def find_elements(self, by:str = '', value:str = '') -> object:
+    def find_elements(self, by:str = '', value:str = '', wait:bool = True) -> object:
         """Finds various HTML elements in a website.
         
         Parameters
@@ -197,10 +197,15 @@ class Browser:
             
         value : str
             - HTML parameter to find the elements.
+
+        wait : bool
+            - Whether or not wait until the element is present in the page.
         """        
-        self.__wait_element_load(by = by, value = value)
-        self.__check_args(by, str)
-        self.__check_args(value, str)
+        if wait == True:
+            self.__wait_element_load(by = by, value = value)
+        else:
+            self.__check_args(by, str)
+            self.__check_args(value, str)
 
         if by.lower() == 'class_name':
             return self._driver.find_elements_by_class_name(value)
@@ -321,7 +326,11 @@ class Browser:
         else:
             return
 
-        WebDriverWait(self._driver, self.wait_time).until(EC.presence_of_element_located(locator))
+        try:
+            WebDriverWait(self._driver, self.wait_time).until(EC.presence_of_element_located(locator))
+        except:
+            print('HTML element not located. Shutting down.')
+            sys.exit()
         return
     
     def handle_popup(self, action:str = '', keys:str = '') -> None:

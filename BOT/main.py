@@ -114,24 +114,19 @@ if __name__ == "__main__":
 
     # Iterate the calendar until find and available day
     while no_available_days:
-        #green_days = browser.find_and_click(by = 'class_name', value = loc['GREEN_DAYS'])
-        table = browser.find_elements(by = 'XPATH', value = '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/tbody')[0]
-        if isinstance(table, object):
-            # POR ALGUN MOTIVO NO ESTA ENCONTRANDO EL ELEMENTO
-            browser.find_elements(by = 'class_name', value = loc['GREEN_DAYS'])
-            print('Hola')
-        sys.exit()
-
         try:
             # Find all the available days in a month
-            green_days = browser.find_elements(by = 'class_name', value = loc['GREEN_DAYS'])
+            print('Buscando green days')
+            green_days = browser.find_elements(by = 'class_name', value = loc['GREEN_DAYS'], wait = False)
+            print(green_days)
+            print(len(green_days))
         except:
             pass
         
         # Look at the month
         month = browser.find_elements(by = 'XPATH', value = loc['MONTH'])[0].text[:-5]
+        print(month)
 
-        print(len(green_days))
 
         # Logic to walk around the months
         if len(green_days) == 0:
@@ -140,7 +135,9 @@ if __name__ == "__main__":
                 no_available_days = False
             else:
                 # Continue searching for available days in next month
+                print('Moviendo hacia adelante el calendario')
                 browser.find_and_click(by = loc['BY'], value = loc['FORWARD'])
+                time.sleep(5)
                 continue
         else:
             print(green_days)
