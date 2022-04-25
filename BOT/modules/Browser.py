@@ -93,7 +93,7 @@ class Browser:
         self._options = self.__set_options()
 
         # Set the wait time
-        self.wait_time = 15
+        self.wait_time = 5
 
         # Create the driver instance
         if undetectable == False:
@@ -193,7 +193,7 @@ class Browser:
         ----------
         by : str
             - How will Selenium search for the elements.
-            - Possible values: xpath, class_name.
+            - Possible values: xpath, class_name, css_selector.
             
         value : str
             - HTML parameter to find the elements.
@@ -211,6 +211,8 @@ class Browser:
             return self._driver.find_elements_by_class_name(value)
         elif by.lower() == 'xpath':
             return self._driver.find_elements_by_xpath(value)
+        elif by.lower() == 'css_selector':
+            return self._driver.find_elements_by_css_selector(value)
 
         return
     
@@ -323,14 +325,24 @@ class Browser:
             locator = (By.XPATH, value)
         elif by.lower() == 'class_name':
             locator = (By.CLASS_NAME, value)
+        elif by.lower() == 'css_selector':
+            locator = (By.CSS_SELECTOR, value)
         else:
             return
 
         try:
             WebDriverWait(self._driver, self.wait_time).until(EC.presence_of_element_located(locator))
         except:
+            pass
+        else:
+            return
+
+        try:
+            WebDriverWait(self._driver, self.wait_time).until(EC.presence_of_all_elements_located(locator))
+        except:
             print('HTML element not located. Shutting down.')
             sys.exit()
+
         return
     
     def handle_popup(self, action:str = '', keys:str = '') -> None:

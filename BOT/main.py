@@ -89,10 +89,10 @@ if __name__ == "__main__":
 
     # Check the terms and conditions
     browser.find_and_click(by = loc['BY'], value = loc['CHECKBOX'])
-
+    
     # Submit the form
     browser.find_and_click(by = loc['BY'], value = loc['SUBMIT'])
-
+    
     # Press OK in the popup window
     browser.handle_popup(action = 'accept')
 
@@ -116,17 +116,14 @@ if __name__ == "__main__":
     while no_available_days:
         try:
             # Find all the available days in a month
-            print('Buscando green days')
-            green_days = browser.find_elements(by = 'class_name', value = loc['GREEN_DAYS'], wait = False)
-            print(green_days)
-            print(len(green_days))
+            green_days = browser.find_elements(by = 'class_name', value = loc['GREEN_DAYS'])
+            if green_days == None:
+                green_days = []
         except:
             pass
         
         # Look at the month
-        month = browser.find_elements(by = 'XPATH', value = loc['MONTH'])[0].text[:-5]
-        print(month)
-
+        month = browser.find_elements(by = loc['BY'], value = loc['MONTH'])[0].text[:-5]
 
         # Logic to walk around the months
         if len(green_days) == 0:
@@ -135,12 +132,22 @@ if __name__ == "__main__":
                 no_available_days = False
             else:
                 # Continue searching for available days in next month
-                print('Moviendo hacia adelante el calendario')
                 browser.find_and_click(by = loc['BY'], value = loc['FORWARD'])
-                time.sleep(5)
+                time.sleep(2)
                 continue
         else:
-            print(green_days)
+            # Click on the first available day
+            green_days[0].click()
+
+            # Find the first available hour
+            hours = browser.find_elements(by = 'class_name', value = loc['HOURS'])
+
+            # Click on the first available hour
+            hours[0].click()
+            
+            # Submit the form
+            browser.find_and_click(by = loc['BY'], value = loc['SUBMIT'])
+
             break
 
     time.sleep(5)

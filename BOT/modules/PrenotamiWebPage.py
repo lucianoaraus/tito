@@ -54,7 +54,9 @@ class PrenotamiWebPage:
                                             'FORWARD'    : '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/thead/tr[1]/th[3]/span',
                                             'BACKWARD'   : '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/thead/tr[1]/th[1]/span',
                                             'MONTH'      : '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/thead/tr[1]/th[2]',
-                                            'GREEN_DAYS' : 'day availableDay' # The class name of the green days in the calendar
+                                            'GREEN_DAYS' : 'day.availableDay', # The class name of the green days in the calendar
+                                            'HOURS'      : 'fascia.act', # The class name of the hours button
+                                            'SUBMIT'     : '//*[@id="btnPrenotaNoOtp"]'
                                         },
                             
                             'notarial' : {
