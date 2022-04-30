@@ -64,7 +64,7 @@ NOTES = This is a note for the embassy.
 python main.py
 ```
 
-5. Depending on the selected service, the script runs until the OTP code is required (this depends on the location of the selected embassy). Once the popup window shows, you neeed to enter it manually and click **OK**.
+5. Depending on the selected service, the script runs until the OTP code is required (this depends on the location of the selected embassy). Once the popup window shows, you need to enter it manually and click **OK**.
 
 6. Enjoy.
 
