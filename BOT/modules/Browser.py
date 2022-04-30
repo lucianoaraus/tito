@@ -1,5 +1,5 @@
-# Load installer class
-from .Installer import Installer
+# Load useful classes
+import Installer
 import sys
 
 try:
@@ -68,7 +68,8 @@ class Browser:
     """
 
     # Constructor of the browser handler
-    def __init__(self, PATH_TO_DRIVER:str = '', undetectable:bool = False) -> None:
+    def __init__(self, PATH_TO_DRIVER: str = '', 
+                 undetectable: bool = False) -> None:
         """Constructor of the class
 
         Parameters
@@ -98,24 +99,26 @@ class Browser:
         # Create the driver instance
         if undetectable == False:
             # Set the driver
-            self._driver = webdriver.Chrome(executable_path = self._PATH_TO_DRIVER, options = self._options)
+            self._driver = webdriver.Chrome(
+                executable_path=self._PATH_TO_DRIVER, 
+                options=self._options)
         else:
             # Set the driver
-            self._driver = uc.Chrome(options = self._options)
+            self._driver = uc.Chrome(options=self._options)
 
         # Avoid detection
-        self._driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+        self._driver.execute_script("Object.defineProperty(navigator, \
+                                    'webdriver',\ {get: () => undefined})")
 
-        self._driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
-                                                                                "source":
-                                                                                "const newProto = navigator.__proto__;"
-                                                                                "delete newProto.webdriver;"
-                                                                                "navigator.__proto__ = newProto;"
-                                                                            }
-                                    )
+        self._driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", 
+                                    {"source":
+                                    "const newProto = navigator.__proto__;"
+                                    "delete newProto.webdriver;"
+                                    "navigator.__proto__ = newProto;"})
 
-        self._driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent" : self._user_agent})
-        return
+        self._driver.execute_cdp_cmd('Network.setUserAgentOverride', 
+                                    {"userAgent": self._user_agent})
+        return None
 
     # Define options of the browser in order to avoid detection
     def __set_options(self) -> object:
@@ -125,7 +128,7 @@ class Browser:
         # Set a random user agent in order to avoid captcha
         self._user_agent = UserAgent().random
 
-        if self._undetectable == True:
+        if self._undetectable:
             return uc.ChromeOptions()
         else:
             # Instantiate a options object of Chrome
@@ -160,7 +163,7 @@ class Browser:
             return opt
 
     # Find and HTML element
-    def __find_element(self, by:str = '', value:str = '') -> object:
+    def __find_element(self, by: str = '', value: str = '') -> object:
         """Finds a HTML element in a website.
         
         Parameters
@@ -173,20 +176,22 @@ class Browser:
             - HTML parameter to find the element.
         """
 
-        self.__wait_element_load(by = by, value = value)
+        self.__wait_element_load(by=by, value=value)
 
         if by.lower() == 'id':
-            return self._driver.find_element(by = By.ID, value = value)
+            return self._driver.find_element(by=By.ID, value=value)
         elif by.lower() == 'link_text':
-            return self._driver.find_element(by = By.LINK_TEXT, value = value)
+            return self._driver.find_element(by=By.LINK_TEXT, value=value)
         elif by.lower() == 'xpath':
-            return self._driver.find_element(by = By.XPATH, value = value)
+            return self._driver.find_element(by=By.XPATH, value=value)
         elif by.lower() == 'class_name':
-            return self._driver.find_element(by = By.CLASS_NAME, value = value)
-        return
+            return self._driver.find_element(by=By.CLASS_NAME, value=value)
+        return None
 
     # Find more than one element
-    def find_elements(self, by:str = '', value:str = '', wait:bool = True) -> object:
+    def find_elements(self, by: str = '',
+                      value: str = '', 
+                      wait: bool = True) -> object:
         """Finds various HTML elements in a website.
         
         Parameters
@@ -201,8 +206,8 @@ class Browser:
         wait : bool
             - Whether or not wait until the element is present in the page.
         """        
-        if wait == True:
-            self.__wait_element_load(by = by, value = value)
+        if wait:
+            self.__wait_element_load(by=by, value=value)
         else:
             self.__check_args(by, str)
             self.__check_args(value, str)
@@ -214,10 +219,11 @@ class Browser:
         elif by.lower() == 'css_selector':
             return self._driver.find_elements_by_css_selector(value)
 
-        return
+        return None
     
     # Validate arguments
-    def __check_args(self, args:str = '', instance:[object, list] = '') -> None:
+    def __check_args(self, args: str = '', 
+                     instance: [object, list] = '') -> None:
         """Method to validate arguments
         
         Parameters
@@ -238,10 +244,10 @@ class Browser:
             if not isinstance(args, instance) or args == '':
                 print("Argument is empty or wrong. Shutting down.")
                 sys.exit()
-        return
+        return None
 
     # Go to specific URL
-    def go_to(self, url:str = '') -> None:
+    def go_to(self, url: str = '') -> None:
         """Redirects to specified URL.\n
         If the argument ``url`` is not a string or it's empty, the scripts ends.
 
@@ -252,11 +258,11 @@ class Browser:
         """
         self.__check_args(url, str)
         self._url = url
-        self._driver.get(url = self._url)
-        return
+        self._driver.get(url=self._url)
+        return None
 
     # Find and click a HTML element
-    def find_and_click(self, by:str = '', value:str = '') -> None:
+    def find_and_click(self, by: str = '', value: str = '') -> None:
         """Find a HTML element and click on it.\n
         If the arguments ``by`` or ``value`` is not a string or it's empty, the scripts ends.
 
@@ -269,11 +275,13 @@ class Browser:
         """
         self.__check_args(by, str)
         self.__check_args(value, str)
-        self.__find_element(by = by, value = value).click()
-        return
+        self.__find_element(by=by, value=value).click()
+        return None
 
     # Find a HTML element, fill it with text, then submit
-    def find_fill_submit(self, by:str = '', value:str = '', keys:[str, list] = '', submit:bool = False) -> None:
+    def find_fill_submit(self, by: str = '', 
+                         value: str = '', keys: [str, list] = '', 
+                         submit: bool = False) -> None:
         """Find a HTML element, fill it with text and submit (if it's a form). \n
         If the arguments ``by`` or ``value`` aren't strings or are empty, the scripts ends.
 
@@ -288,7 +296,7 @@ class Browser:
         self.__check_args(value, str)
         self.__check_args(keys, (str, list))
         
-        element = self.__find_element(by = by, value = value)
+        element = self.__find_element(by=by, value=value)
 
         if  isinstance(keys, str):
             element.send_keys(keys)
@@ -297,20 +305,20 @@ class Browser:
             if keys[1].lower() == 'return':
                 element.send_keys(Keys.RETURN)
 
-        if submit == True:
+        if submit:
             element.submit()
-            return
+            return None
 
-        return
+        return None
 
-    def __wait_element_load(self, by:str = '', value:str = '') -> None:
+    def __wait_element_load(self, by: str = '', value: str = '') -> None:
         """Wait until a HTML element is loaded. \n
         If the arguments ``by`` or ``value`` aren't strings or are empty, the scripts ends.
 
         Parameters
         ----------
         by : str
-            - How will Selenium search for the element. Possible values: id, link_text, xpath, class_name
+            - How will Selenium search for the element.Possible values: id, link_text, xpath, class_name
         value : str
             - HTML parameter to find the element.
         """
@@ -328,24 +336,26 @@ class Browser:
         elif by.lower() == 'css_selector':
             locator = (By.CSS_SELECTOR, value)
         else:
-            return
+            return None
 
         try:
-            WebDriverWait(self._driver, self.wait_time).until(EC.presence_of_element_located(locator))
+            WebDriverWait(self._driver, self.wait_time) \
+            .until(EC.presence_of_element_located(locator))
         except:
             pass
         else:
-            return
+            return None
 
         try:
-            WebDriverWait(self._driver, self.wait_time).until(EC.presence_of_all_elements_located(locator))
+            WebDriverWait(self._driver, self.wait_time) \
+            .until(EC.presence_of_all_elements_located(locator))
         except:
             print('HTML element not located. Shutting down.')
             sys.exit()
 
-        return
+        return None
     
-    def handle_popup(self, action:str = '', keys:str = '') -> None:
+    def handle_popup(self, action: str = '', keys: str = '') -> None:
         """Handles a popup. \n
         If the argument ``action`` isn't a string or is empty, the scripts ends.
 
@@ -372,7 +382,7 @@ class Browser:
 
         # Validate argument
         self.__check_args(action, str)
-        
+
         # If invalid parameter is passed, shut down
         if action not in values:
             self.__check_args()
@@ -382,13 +392,13 @@ class Browser:
         # Perform the action
         if action == 'accept':
             self._driver.switch_to.alert.accept()
-            return
+            return None
         elif action == 'dismiss':
             self._driver.switch_to.alert.dismiss()
-            return
+            return None
         elif action == 'get_text':
             return self._driver.switch_to.alert.text
         elif action == 'send_keys':
             self._driver.switch_to.alert.send_keys(keys)
             self._driver.switch_to.alert.accept()
-            return
+            return None
