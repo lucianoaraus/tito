@@ -1,5 +1,4 @@
 # Load useful classes
-import Installer
 import sys
 
 try:
@@ -107,8 +106,8 @@ class Browser:
             self._driver = uc.Chrome(options=self._options)
 
         # Avoid detection
-        self._driver.execute_script("Object.defineProperty(navigator, \
-                                    'webdriver',\ {get: () => undefined})")
+        self._driver.execute_script(
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
         self._driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", 
                                     {"source":
