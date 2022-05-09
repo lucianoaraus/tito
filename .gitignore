@@ -1,3 +1,4 @@
 # Ignore all ini files
 *.ini
 *.html
+*__pycache__

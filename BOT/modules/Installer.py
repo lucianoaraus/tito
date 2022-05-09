@@ -46,7 +46,8 @@ class Installer:
         if package == '' and self.package == '':
             return None
 
-        self.package = package
+        if package:
+            self.package = package
 
         if root == True or self.root == True:
             subprocess.check_call([sys.executable, "-m", "pip", "install", self.package, '--user'])

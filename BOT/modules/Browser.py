@@ -1,6 +1,12 @@
 # Load useful classes
 import sys
 
+# Import Installer for missing packages
+if __name__ == '__main__':
+    from Installer import Installer
+else:
+    from .Installer import Installer
+
 try:
     # Import Selenium if installed
     from selenium import webdriver
@@ -11,7 +17,7 @@ except ModuleNotFoundError:
 try:
     from fake_useragent import UserAgent
 except ModuleNotFoundError:
-    # If not installed, install it
+    # If not installed, instalrl it
     Installer('fake_useragent').install()
 
 try:
