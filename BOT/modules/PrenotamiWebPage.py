@@ -16,11 +16,11 @@ class PrenotamiWebPage:
                 'BY': 'ID', # How to locate the elements
                 'LOGIN_EMAIL': "login-email", # By.ID
                 'LOGIN_PASSWORD': "login-password" # By.ID
-                },
+            },
             'user_area': {
                 'BY': 'LINK_TEXT', # How to locate the elements
                 'USERAREA_PRENOTA': 'Prenota' # By.LINK_TEXT
-                },
+            },
             'direct_son': {
                 'BY': 'XPATH', # How to locate the elements
                 'SERVICE_BUTTON': '//*[@id="dataTableServices"]/tbody/tr[1]/td[4]/a/button',
@@ -31,11 +31,11 @@ class PrenotamiWebPage:
                 'NOTES': '//*[@id="BookingNotes"]',
                 'CHECKBOX': '//*[@id="PrivacyCheck"]',
                 'SUBMIT': '//*[@id="btnAvanti"]'
-                },
+            },
             'reconstruction': {
                 'BY': 'XPATH', # How to locate the elements
                 'SERVICE_BUTTON': ''
-                },
+            },
             'passport': {
                 'BY': 'XPATH', # How to locate the elements
                 'SERVICE_BUTTON': '//*[@id="dataTableServices"]/tbody/tr[2]/td[4]/a/button',
@@ -43,7 +43,7 @@ class PrenotamiWebPage:
                 'NOTES': '//*[@id="BookingNotes"]',
                 'CHECKBOX': '//*[@id="PrivacyCheck"]',
                 'SUBMIT': '//*[@id="btnAvanti"]'
-                },
+            },
             'calendar': {
                 'BY': 'XPATH', # How to locate the elements
                 'FORWARD': '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/thead/tr[1]/th[3]/span',
@@ -51,15 +51,18 @@ class PrenotamiWebPage:
                 'MONTH': '//*[@id="datetimepicker"]/div/ul/ul/div/div[1]/table/thead/tr[1]/th[2]',
                 'GREEN_DAYS': 'day.availableDay', # The class name of the green days in the calendar
                 'HOURS': 'fascia.act', # The class name of the hours button
-                'SUBMIT': '//*[@id="btnPrenotaNoOtp"]'
-                },
+                'OTP': '//*[@id="idOtp"]',
+                'OTP_OK': '/html/body/div[2]/div[2]/div/div/div/div/div/div/div/div[4]/button[3]',
+                'SUBMIT': '/html/body/main/div[2]/div/div[2]/button'
+
+            },
             'notarial': {
                 'BY': 'XPATH', # How to locate the elements
                 'SERVICE_BUTTON': '//*[@id="dataTableServices"]/tbody/tr[4]/td[4]/a/button',
                 'NOTES': '//*[@id="BookingNotes"]',
                 'CHECKBOX': '//*[@id="PrivacyCheck"]',
                 'SUBMIT': '//*[@id="btnAvanti"]'
-                }
+            }
         }
         return None
 

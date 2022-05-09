@@ -28,6 +28,9 @@ if __name__ == "__main__":
     # Service required
     SERVICE = config['PRENOTAMI_DATA']['service']
 
+    # OTP code insertion delay
+    OTP_DELAY_TIME = int(config['PRENOTAMI_DATA']['otp_delay'])
+
     # The form data
     FORM_DATA = config[SERVICE.upper()]
 
@@ -38,22 +41,22 @@ if __name__ == "__main__":
 
     """/*** GET INTO PRENOTAMI WEBPAGE AND LOGIN ***/"""
     # Create the instance of the browser
-    browser = Browser(PATH_TO_DRIVER = PATH_TO_CHROME_DRIVER)
+    browser = Browser(PATH_TO_DRIVER=PATH_TO_CHROME_DRIVER)
 
     # Create the Web Page object to retrieve locators
-    web_page = PrenotamiWebPage(service = SERVICE)
+    web_page = PrenotamiWebPage(service=SERVICE)
 
     # Get the URL
-    browser.go_to(url = web_page.get_url())
+    browser.go_to(url=web_page.get_url())
     
     # Locate login form
     loc = web_page.get_locator('login')
     
     # Search for the e-mail field and fill it
-    browser.find_fill_submit(by = loc['BY'], value = loc['LOGIN_EMAIL'], keys = EMAIL)
+    browser.find_fill_submit(by=loc['BY'], value=loc['LOGIN_EMAIL'], keys=EMAIL)
 
     # Search for the pass field, fill it and submit the form
-    browser.find_fill_submit(by = loc['BY'], value = loc['LOGIN_PASSWORD'], keys = [PASSWORD, 'RETURN'])
+    browser.find_fill_submit(by=loc['BY'], value=loc['LOGIN_PASSWORD'], keys=[PASSWORD, 'RETURN'])
 
     # Delete the variable
     del(loc)
@@ -65,7 +68,7 @@ if __name__ == "__main__":
     loc = web_page.get_locator('user_area')
 
     # Click on book tab
-    browser.find_and_click(by = loc['BY'], value = loc['USERAREA_PRENOTA'])
+    browser.find_and_click(by=loc['BY'], value=loc['USERAREA_PRENOTA'])
 
     # Delete the variable
     del(loc)
@@ -74,7 +77,7 @@ if __name__ == "__main__":
     loc = web_page.get_locator(SERVICE)
 
     # Click on the service
-    browser.find_and_click(by = loc['BY'], value = loc['SERVICE_BUTTON'])
+    browser.find_and_click(by=loc['BY'], value=loc['SERVICE_BUTTON'])
     
 
 
@@ -83,18 +86,18 @@ if __name__ == "__main__":
     # Fill the form with the specified data
     for field in FORM_DATA:
         try:
-            browser.find_fill_submit(by = loc['BY'], value = loc[field.upper()], keys = FORM_DATA[field])
+            browser.find_fill_submit(by=loc['BY'], value=loc[field.upper()], keys=FORM_DATA[field])
         except:
             continue
 
     # Check the terms and conditions
-    browser.find_and_click(by = loc['BY'], value = loc['CHECKBOX'])
+    browser.find_and_click(by=loc['BY'], value=loc['CHECKBOX'])
     
     # Submit the form
-    browser.find_and_click(by = loc['BY'], value = loc['SUBMIT'])
+    browser.find_and_click(by=loc['BY'], value=loc['SUBMIT'])
     
     # Press OK in the popup window
-    browser.handle_popup(action = 'accept')
+    browser.handle_popup(action='accept')
 
     # Delete the variable
     del(loc)
@@ -116,14 +119,14 @@ if __name__ == "__main__":
     while no_available_days:
         try:
             # Find all the available days in a month
-            green_days = browser.find_elements(by = 'class_name', value = loc['GREEN_DAYS'])
+            green_days = browser.find_elements(by='class_name', value=loc['GREEN_DAYS'])
             if green_days == None:
                 green_days = []
         except:
             pass
         
         # Look at the month
-        month = browser.find_elements(by = loc['BY'], value = loc['MONTH'])[0].text[:-5]
+        month = browser.find_elements(by=loc['BY'], value=loc['MONTH'])[0].text[:-5]
 
         # Logic to walk around the months
         if len(green_days) == 0:
@@ -132,22 +135,45 @@ if __name__ == "__main__":
                 no_available_days = False
             else:
                 # Continue searching for available days in next month
-                browser.find_and_click(by = loc['BY'], value = loc['FORWARD'])
+                browser.find_and_click(by=loc['BY'], value=loc['FORWARD'])
                 time.sleep(2)
                 continue
         else:
+            # Change the flag
+            no_available_days = False
+
             # Click on the first available day
             green_days[0].click()
 
             # Find the first available hour
-            hours = browser.find_elements(by = 'class_name', value = loc['HOURS'])
+            hours = browser.find_elements(by='class_name', value=loc['HOURS'])
 
             # Click on the first available hour
             hours[0].click()
-            
+
             # Submit the form
-            browser.find_and_click(by = loc['BY'], value = loc['SUBMIT'])
+            browser.find_and_click(by=loc['BY'], value=loc['SUBMIT'])
 
-            break
+            # If there is an OTP code to insert, wait until the user writes it
+            try:
+                otp = browser.find_elements(by=loc['BY'], value=loc['OTP'])
+            except:
+                pass
+            else:
+                # Click on the input of the OTP window
+                otp[0].click()
+                
+                # Get the OTP ok button
+                otp_ok = browser.find_elements(by=loc['BY'], value=loc['OTP_OK'])
+                
+                # Wait until the user inserts the OTP code
+                time.sleep(OTP_DELAY_TIME)
+                
+                # Submit the OTP form
+                otp_ok[0].click()
+    
+    # Wait a long time to ensure the procces is ended
+    time.sleep(10)
 
-    time.sleep(5)
+    # Then, end the script
+    sys.exit()
