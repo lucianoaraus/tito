@@ -5,9 +5,9 @@ It's coded in Python, with the Selenium package for web scraping.
 
 ### Usage:
 
-1. Clone this repository in your computer. For this, open a CLI and copy&paste the following command:
+1. Clone this repository in your computer. For this, open a Git bash, navigate to the directory where you want the cloned repository to be added, and copy&paste the following command:
 ```
-gh repo clone hvignolo87/tito
+$ git clone https://github.com/hvignolo87/tito.git
 ```
 2. Create a file inside the **BOT** folder, named *user_data.ini*, with the following structure:
 ```
@@ -20,6 +20,11 @@ pass = <you password here>
 
 # The required service. Chose one of this options: reconstruction, direct_son, passport, notarial.
 service = notarial
+
+# Number of seconds to wait for OTP code insertion by user.
+# In case that your service doesn't require an OTP code, ignore it.
+# WARNING: never leave it in blank.
+otp_delay = 10
 
 
 # Form data
@@ -54,17 +59,19 @@ NOTES = <notes here>
 email = johndoe@gmail.com
 pass = JohnDoe
 service = notarial
+otp_delay = 10
 
 [NOTARIAL]
 NOTES = This is a note for the embassy.
 ```
 
-4. Open a CLI and navigate to the **BOT** folder with the *cd* command. Once there, copy&paste the following command:
+4. Open a CLI (bash, powershell) and navigate to the **BOT** folder with the *cd* command. Once there, copy&paste the following command:
 ```
 python main.py
 ```
 
-5. Depending on the selected service, the script runs until the OTP code is required (this depends on the location of the selected embassy). Once the popup window shows, you need to enter it manually and click **OK**.
+5. Depending on the selected service, the script runs until the OTP code is required (this depends on the location of the selected embassy). Once the popup window shows, you need to enter it manually. **Don't click OK once inserted the code, just wait**.
+You'll need to play with the *otp_delay* parameter in order to adjust it as minimum as possible. Start with 10s.
 
 6. Enjoy.
 
