@@ -34,7 +34,10 @@ class PrenotamiWebPage:
             },
             'reconstruction': {
                 'BY': 'XPATH', # How to locate the elements
-                'SERVICE_BUTTON': ''
+                'SERVICE_BUTTON': '//*[@id="dataTableServices"]/tbody/tr[3]/td[4]/a/button',
+                'NOTES': '//*[@id="BookingNotes"]',
+                'CHECKBOX': '//*[@id="PrivacyCheck"]',
+                'SUBMIT': '//*[@id="btnAvanti"]'
             },
             'passport': {
                 'BY': 'XPATH', # How to locate the elements
