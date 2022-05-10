@@ -53,7 +53,7 @@ NOTES = <notes here>
 NOTES = <notes here>
 ```
 
-3. Fill the **email**, **pass** and **service** fields with your data, then go to the selected service section and fill the form data. For example:
+3. Fill the **email**, **pass** and **service** fields with your data, then go to the selected service section and fill the form data. Also fill the **otp_delay** parameter (see point 5 below). For example:
 ```
 [PRENOTAMI_DATA]
 email = johndoe@gmail.com
