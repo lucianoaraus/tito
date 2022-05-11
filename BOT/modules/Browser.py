@@ -26,12 +26,22 @@ except ModuleNotFoundError:
     # If not installed, install it
     Installer('undetected-chromedriver').install()
 
+try:
+    from webdriver_manager.chrome import ChromeDriverManager
+except ModuleNotFoundError:
+    # If not installed, install it
+    Installer('webdriver-manager').install()
+
 # Selenium useful modules
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+
+# Webdriver Manager
+from webdriver_manager.chrome import ChromeDriverManager
 
 # Undetectable Chrome
 import undetected_chromedriver as uc
@@ -47,9 +57,6 @@ class Browser:
 
     Parameters
     ----------
-    PATH_TO_DRIVER : str
-        - Path to the browser driver.
-        
     undetectable : bool
         - Flag to switch to undetectable mode if needed.
     
@@ -70,27 +77,22 @@ class Browser:
             
         find_fill_submit(by='', value='', keys='', submit=False)
         Finds a HTML element, fill it with text and submit it (if it's a form).
+
+        handle_popup(action='', keys=''):
+        Handles a popup window. 
     """
 
     # Constructor of the browser handler
-    def __init__(self, PATH_TO_DRIVER: str = '', 
-                 undetectable: bool = False) -> None:
+    def __init__(self, undetectable: bool = False) -> None:
         """Constructor of the class
 
         Parameters
         ----------
-            PATH_TO_DRIVER : str
-            Path to the browser driver
-            
-            undetectable : bool
-            Flag to switch to undetectable mode if needed
+        undetectable : bool
+            - Flag to switch to undetectable mode if needed
         """
 
-        self.__check_args(PATH_TO_DRIVER, str)
         self.__check_args(undetectable, bool)
-
-        # Path to the Chrome driver
-        self._PATH_TO_DRIVER = PATH_TO_DRIVER
 
         # Undetectable flag
         self._undetectable = undetectable
@@ -105,7 +107,7 @@ class Browser:
         if undetectable == False:
             # Set the driver
             self._driver = webdriver.Chrome(
-                executable_path=self._PATH_TO_DRIVER, 
+                service=Service(ChromeDriverManager().install()),
                 options=self._options)
         else:
             # Set the driver

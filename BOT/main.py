@@ -10,6 +10,7 @@ if not os.getcwd()[-3:].lower() == 'bot':
 
 # Import all modules
 from modules import *
+from datetime import datetime
 
 # Start the script
 if __name__ == "__main__":
@@ -34,14 +35,12 @@ if __name__ == "__main__":
     # The form data
     FORM_DATA = config[SERVICE.upper()]
 
-    # Path to the Chrome Driver
-    PATH_TO_CHROME_DRIVER = os.path.join(os.getcwd(), 'chromedriver.exe')
 
 
 
     """/*** GET INTO PRENOTAMI WEBPAGE AND LOGIN ***/"""
     # Create the instance of the browser
-    browser = Browser(PATH_TO_DRIVER=PATH_TO_CHROME_DRIVER)
+    browser = Browser()
 
     # Create the Web Page object to retrieve locators
     web_page = PrenotamiWebPage(service=SERVICE)
@@ -66,6 +65,21 @@ if __name__ == "__main__":
     """/*** GO TO BOOK SECTION AND CLICK ON THE SERVICE ***/"""
     # Locate book link
     loc = web_page.get_locator('user_area')
+
+    # Check if it's time to start
+    now = datetime.now()
+    init_hour = datetime.now().replace(hour=19, minute=00, 
+                                       second=0, microsecond=0)
+    diff = init_hour - now
+    diff = diff.total_seconds()
+
+    if diff >= 0:
+        print(f'Waiting until {init_hour}...')
+        print(f'Time left: {diff} seconds.')
+        time.sleep(diff)
+    else:
+        print('Too late. Try again tomorrow.')
+        sys.exit()
 
     # Click on book tab
     browser.find_and_click(by=loc['BY'], value=loc['USERAREA_PRENOTA'])
@@ -115,6 +129,12 @@ if __name__ == "__main__":
     # Initialize assuming no green days available
     green_days = []
 
+    # Try for max 18 months
+    max_tries = 18
+
+    # Count each iteration
+    iter_count = 0
+
     # Iterate the calendar until find and available day
     while no_available_days:
         try:
@@ -125,18 +145,20 @@ if __name__ == "__main__":
         except:
             pass
         
-        # Look at the month
-        month = browser.find_elements(by=loc['BY'], value=loc['MONTH'])[0].text[:-5]
-
         # Logic to walk around the months
         if len(green_days) == 0:
-            if month == 'dicembre':
-                # No available days in the year
+            # Compare iteration number with stop limit
+            if iter_count > max_tries:
+                # No available days within 18 months
                 no_available_days = False
             else:
                 # Continue searching for available days in next month
                 browser.find_and_click(by=loc['BY'], value=loc['FORWARD'])
+                # Sum one iteration
+                iter_month += 1
+                # Wait until everything is loaded
                 time.sleep(2)
+                #Continue the loop
                 continue
         else:
             # Change the flag
