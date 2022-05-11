@@ -61,10 +61,14 @@ if __name__ == "__main__":
     loc = web_page.get_locator('login')
     
     # Search for the e-mail field and fill it
-    browser.find_fill_submit(by=loc['BY'], value=loc['LOGIN_EMAIL'], keys=EMAIL)
+    browser.find_fill_submit(by=loc['BY'], 
+                             value=loc['LOGIN_EMAIL'], 
+                             keys=EMAIL)
 
     # Search for the pass field, fill it and submit the form
-    browser.find_fill_submit(by=loc['BY'], value=loc['LOGIN_PASSWORD'], keys=[PASSWORD, 'RETURN'])
+    browser.find_fill_submit(by=loc['BY'], 
+                             value=loc['LOGIN_PASSWORD'], 
+                             keys=[PASSWORD, 'RETURN'])
 
     # Delete the variable
     del(loc)
@@ -113,7 +117,9 @@ if __name__ == "__main__":
     # Fill the form with the specified data
     for field in FORM_DATA:
         try:
-            browser.find_fill_submit(by=loc['BY'], value=loc[field.upper()], keys=FORM_DATA[field])
+            browser.find_fill_submit(by=loc['BY'], 
+                                     value=loc[field.upper()], 
+                                     keys=FORM_DATA[field])
         except:
             continue
 
@@ -152,7 +158,8 @@ if __name__ == "__main__":
     while no_available_days:
         try:
             # Find all the available days in a month
-            green_days = browser.find_elements(by='class_name', value=loc['GREEN_DAYS'])
+            green_days = browser.find_elements(by='class_name', 
+                                               value=loc['GREEN_DAYS'])
             if green_days == None:
                 green_days = []
         except:
@@ -203,7 +210,8 @@ if __name__ == "__main__":
                 otp[0].click()
                 
                 # Get the OTP ok button
-                otp_ok = browser.find_elements(by=loc['BY'], value=loc['OTP_OK'])
+                otp_ok = browser.find_elements(by=loc['BY'], 
+                                               value=loc['OTP_OK'])
                 
                 # Wait until the user inserts the OTP code
                 time.sleep(OTP_DELAY_TIME)
