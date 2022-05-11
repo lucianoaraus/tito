@@ -10,6 +10,9 @@ if not os.getcwd()[-3:].lower() == 'bot':
 
 # Import all modules
 from modules import *
+from datetime import datetime
+
+print('TITO started!')
 
 # Start the script
 if __name__ == "__main__":
@@ -17,7 +20,15 @@ if __name__ == "__main__":
     """/*** LOAD DATA FROM INI FILE ***/"""
     # Read data from .ini file
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.getcwd(), 'user_data.ini'))
+
+    # Path to the .ini file
+    ini_path = os.path.join(os.getcwd(), 'user_data.ini')
+
+    if os.path.isfile(ini_path):
+        config.read(ini_path)
+    else:
+        print('ERROR: Please, check the user_data.ini file.')
+        sys.exit()
     
     # Prenot@Mi e-mail
     EMAIL = config['PRENOTAMI_DATA']['email']
@@ -34,14 +45,11 @@ if __name__ == "__main__":
     # The form data
     FORM_DATA = config[SERVICE.upper()]
 
-    # Path to the Chrome Driver
-    PATH_TO_CHROME_DRIVER = os.path.join(os.getcwd(), 'chromedriver.exe')
-
 
 
     """/*** GET INTO PRENOTAMI WEBPAGE AND LOGIN ***/"""
     # Create the instance of the browser
-    browser = Browser(PATH_TO_DRIVER=PATH_TO_CHROME_DRIVER)
+    browser = Browser()
 
     # Create the Web Page object to retrieve locators
     web_page = PrenotamiWebPage(service=SERVICE)
@@ -53,10 +61,14 @@ if __name__ == "__main__":
     loc = web_page.get_locator('login')
     
     # Search for the e-mail field and fill it
-    browser.find_fill_submit(by=loc['BY'], value=loc['LOGIN_EMAIL'], keys=EMAIL)
+    browser.find_fill_submit(by=loc['BY'], 
+                             value=loc['LOGIN_EMAIL'], 
+                             keys=EMAIL)
 
     # Search for the pass field, fill it and submit the form
-    browser.find_fill_submit(by=loc['BY'], value=loc['LOGIN_PASSWORD'], keys=[PASSWORD, 'RETURN'])
+    browser.find_fill_submit(by=loc['BY'], 
+                             value=loc['LOGIN_PASSWORD'], 
+                             keys=[PASSWORD, 'RETURN'])
 
     # Delete the variable
     del(loc)
@@ -66,6 +78,25 @@ if __name__ == "__main__":
     """/*** GO TO BOOK SECTION AND CLICK ON THE SERVICE ***/"""
     # Locate book link
     loc = web_page.get_locator('user_area')
+
+    # Check if it's time to start
+    print('Checking the hour...')
+    now = datetime.now()
+    init_hour = datetime.now().replace(hour=19, minute=00, 
+                                       second=0, microsecond=0)
+    diff = init_hour - now
+    # Remove some seconds in order to improve performance
+    diff = diff.total_seconds() - 3
+
+    if diff >= 0:
+        print(f'Waiting until {init_hour}...')
+        print(f'Time left: {diff} seconds.')
+        time.sleep(diff)
+        print("It's time! Go!")
+    else:
+        print('Too late. Try again tomorrow.')
+        browser.close_browser()
+        sys.exit()
 
     # Click on book tab
     browser.find_and_click(by=loc['BY'], value=loc['USERAREA_PRENOTA'])
@@ -86,7 +117,9 @@ if __name__ == "__main__":
     # Fill the form with the specified data
     for field in FORM_DATA:
         try:
-            browser.find_fill_submit(by=loc['BY'], value=loc[field.upper()], keys=FORM_DATA[field])
+            browser.find_fill_submit(by=loc['BY'], 
+                                     value=loc[field.upper()], 
+                                     keys=FORM_DATA[field])
         except:
             continue
 
@@ -115,28 +148,41 @@ if __name__ == "__main__":
     # Initialize assuming no green days available
     green_days = []
 
+    # Try for max 18 months
+    max_tries = 18
+
+    # Count each iteration
+    iter_count = 0
+
     # Iterate the calendar until find and available day
     while no_available_days:
         try:
             # Find all the available days in a month
-            green_days = browser.find_elements(by='class_name', value=loc['GREEN_DAYS'])
+            green_days = browser.find_elements(by='class_name', 
+                                               value=loc['GREEN_DAYS'])
             if green_days == None:
                 green_days = []
         except:
             pass
         
-        # Look at the month
-        month = browser.find_elements(by=loc['BY'], value=loc['MONTH'])[0].text[:-5]
-
         # Logic to walk around the months
         if len(green_days) == 0:
-            if month == 'dicembre':
-                # No available days in the year
+            # Compare iteration number with stop limit
+            if iter_count > max_tries:
+                # No available days within 18 months
                 no_available_days = False
+                # Print a message
+                print('No days available within next 18 months.')
             else:
                 # Continue searching for available days in next month
                 browser.find_and_click(by=loc['BY'], value=loc['FORWARD'])
+                # Sum one iteration
+                iter_count += 1
+                # Print the count
+                print(f'Remaining attempts: {max_tries-iter_count}')
+                # Wait until everything is loaded
                 time.sleep(2)
+                # Continue the loop
                 continue
         else:
             # Change the flag
@@ -164,16 +210,23 @@ if __name__ == "__main__":
                 otp[0].click()
                 
                 # Get the OTP ok button
-                otp_ok = browser.find_elements(by=loc['BY'], value=loc['OTP_OK'])
+                otp_ok = browser.find_elements(by=loc['BY'], 
+                                               value=loc['OTP_OK'])
                 
                 # Wait until the user inserts the OTP code
                 time.sleep(OTP_DELAY_TIME)
                 
                 # Submit the OTP form
                 otp_ok[0].click()
+
+                # Print a message
+                print('Process succeed!')
     
     # Wait a long time to ensure the procces is ended
     time.sleep(10)
+
+    # Close the browser
+    browser.close_browser()
 
     # Then, end the script
     sys.exit()
