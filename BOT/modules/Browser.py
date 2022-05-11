@@ -79,7 +79,10 @@ class Browser:
         Finds a HTML element, fill it with text and submit it (if it's a form).
 
         handle_popup(action='', keys=''):
-        Handles a popup window. 
+        Handles a popup window.
+
+        close_browser()
+        Quits the driver instance, closing every associated window, which is opened.
     """
 
     # Constructor of the browser handler
@@ -107,7 +110,10 @@ class Browser:
         if undetectable == False:
             # Set the driver
             self._driver = webdriver.Chrome(
-                service=Service(ChromeDriverManager().install()),
+                service=Service(
+                                ChromeDriverManager(print_first_line=False, 
+                                                    log_level=0).install()
+                                ),
                 options=self._options)
         else:
             # Set the driver
@@ -165,6 +171,7 @@ class Browser:
             opt.add_argument('--allow-http-screen-capture')
             opt.add_experimental_option('useAutomationExtension', False)
             opt.add_experimental_option('excludeSwitches', ['enable-automation'])
+            opt.add_experimental_option('excludeSwitches', ['enable-logging'])
             opt.add_argument('--disable-infobars')
             opt.add_argument('--user-agent={}'.format(self._user_agent))
             return opt
@@ -409,3 +416,11 @@ class Browser:
             self._driver.switch_to.alert.send_keys(keys)
             self._driver.switch_to.alert.accept()
             return None
+    
+    def close_browser(self) -> None:
+        """
+        Quits the driver instance, closing
+        every associated window, which is opened.
+        """
+        self._driver.quit()
+        return None
