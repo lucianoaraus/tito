@@ -79,6 +79,12 @@ if __name__ == "__main__":
     # Locate book link
     loc = web_page.get_locator('user_area')
 
+    # Click on book tab
+    browser.find_and_click(by=loc['BY'], value=loc['USERAREA_PRENOTA'])
+
+    # Delete the variable
+    del(loc)
+
     # Check if it's time to start
     print('Checking the hour...')
     now = datetime.now()
@@ -97,12 +103,6 @@ if __name__ == "__main__":
         print('Too late. Try again tomorrow.')
         browser.close_browser()
         sys.exit()
-
-    # Click on book tab
-    browser.find_and_click(by=loc['BY'], value=loc['USERAREA_PRENOTA'])
-
-    # Delete the variable
-    del(loc)
 
     # Locate the required service button
     loc = web_page.get_locator(SERVICE)
