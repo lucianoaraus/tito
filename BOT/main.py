@@ -37,7 +37,6 @@ if __name__ == "__main__":
 
 
 
-
     """/*** GET INTO PRENOTAMI WEBPAGE AND LOGIN ***/"""
     # Create the instance of the browser
     browser = Browser()
@@ -158,7 +157,7 @@ if __name__ == "__main__":
                 iter_month += 1
                 # Wait until everything is loaded
                 time.sleep(2)
-                #Continue the loop
+                # Continue the loop
                 continue
         else:
             # Change the flag
