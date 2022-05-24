@@ -111,8 +111,7 @@ class Browser:
             # Set the driver
             self._driver = webdriver.Chrome(
                 service=Service(
-                                ChromeDriverManager(print_first_line=False, 
-                                                    log_level=0).install()
+                                ChromeDriverManager(log_level=0).install()
                                 ),
                 options=self._options)
         else:
