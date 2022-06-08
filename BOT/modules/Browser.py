@@ -107,13 +107,14 @@ class Browser:
         self.wait_time = 5
 
         # Create the driver instance
-        if undetectable == False:
+        if not undetectable:
             # Set the driver
             self._driver = webdriver.Chrome(
                 service=Service(
-                                ChromeDriverManager(log_level=0).install()
-                                ),
-                options=self._options)
+                    ChromeDriverManager().install()
+                ),
+                options=self._options
+            )
         else:
             # Set the driver
             self._driver = uc.Chrome(options=self._options)
