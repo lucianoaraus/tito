@@ -250,8 +250,7 @@ if __name__ == '__main__':
     """
     check_hour = st.radio(
         label="Enable hour check mode",
-        options=('Yes', 'No'),
-        horizontal=True
+        options=('Yes', 'No')
     )
 
     check_hour = True if check_hour == 'Yes' else False
