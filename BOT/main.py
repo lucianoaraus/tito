@@ -4,31 +4,29 @@ import time
 import os
 import sys
 
-# Set the correct current working directory
-if not os.getcwd()[-3:].lower() == 'bot':
-    os.chdir(os.path.join(os.getcwd(), 'BOT'))
+import streamlit as st
+
+"""
+# TITO
+Bot used to book a day to request italian citizenship (by any method) or passport at Prenot@Mi website.
+In order to making it work, you need to create a configuration file, like explained [here](https://github.com/hvignolo87/tito/blob/main/README.md).
+"""
 
 # Import all modules
 from modules import *
 from datetime import datetime
-
-print('TITO started!')
+from io import StringIO
 
 # Start the script
-if __name__ == "__main__":
-    
-    """/*** LOAD DATA FROM INI FILE ***/"""
+def tito(uploaded_file, check_hour):
+
+    st.write('TITO started!')
+
+    #/*** LOAD DATA FROM INI FILE ***/
     # Read data from .ini file
     config = configparser.ConfigParser()
 
-    # Path to the .ini file
-    ini_path = os.path.join(os.getcwd(), 'user_data.ini')
-
-    if os.path.isfile(ini_path):
-        config.read(ini_path)
-    else:
-        print('ERROR: Please, check the user_data.ini file.')
-        sys.exit()
+    config.read_file(uploaded_file)
     
     # Prenot@Mi e-mail
     EMAIL = config['PRENOTAMI_DATA']['email']
@@ -47,7 +45,7 @@ if __name__ == "__main__":
 
 
 
-    """/*** GET INTO PRENOTAMI WEBPAGE AND LOGIN ***/"""
+    #/*** GET INTO PRENOTAMI WEBPAGE AND LOGIN ***/
     # Create the instance of the browser
     browser = Browser()
 
@@ -75,7 +73,7 @@ if __name__ == "__main__":
 
 
 
-    """/*** GO TO BOOK SECTION AND CLICK ON THE SERVICE ***/"""
+    #/*** GO TO BOOK SECTION AND CLICK ON THE SERVICE ***/
     # Locate book link
     loc = web_page.get_locator('user_area')
 
@@ -86,23 +84,24 @@ if __name__ == "__main__":
     del(loc)
 
     # Check if it's time to start
-    print('Checking the hour...')
-    now = datetime.now()
-    init_hour = datetime.now().replace(hour=19, minute=00, 
-                                       second=0, microsecond=0)
-    diff = init_hour - now
-    # Remove some seconds in order to improve performance
-    diff = diff.total_seconds() - 3
+    if check_hour:
+        st.write('Checking the hour...')
+        now = datetime.now()
+        init_hour = datetime.now().replace(hour=19, minute=00, 
+                                        second=0, microsecond=0)
+        diff = init_hour - now
+        # Remove some seconds in order to improve performance
+        diff = diff.total_seconds() - 3
 
-    if diff >= 0:
-        print(f'Waiting until {init_hour}...')
-        print(f'Time left: {diff} seconds.')
-        time.sleep(diff)
-        print("It's time! Go!")
-    else:
-        print('Too late. Try again tomorrow.')
-        browser.close_browser()
-        sys.exit()
+        if diff >= 0:
+            st.write(f'Waiting until {init_hour}...')
+            st.write(f'Time left: {diff} seconds.')
+            time.sleep(diff)
+            st.write("It's time! Go!")
+        else:
+            print('Too late. Try again tomorrow.')
+            browser.close_browser()
+            sys.exit()
 
     # Locate the required service button
     loc = web_page.get_locator(SERVICE)
@@ -112,7 +111,7 @@ if __name__ == "__main__":
     
 
 
-    """/*** FILL THE FORM AND SUBMIT ***/"""
+    #/*** FILL THE FORM AND SUBMIT ***/
     
     # Fill the form with the specified data
     for field in FORM_DATA:
@@ -137,7 +136,7 @@ if __name__ == "__main__":
 
 
 
-    """/*** CALENDAR SECTION: FIND AN AVAILABLE DAY AND BOOK ***/"""
+    #/*** CALENDAR SECTION: FIND AN AVAILABLE DAY AND BOOK ***/
 
     # Locate the calendar buttons: backwards, month and forward
     loc = web_page.get_locator('calendar')
@@ -172,14 +171,14 @@ if __name__ == "__main__":
                 # No available days within 18 months
                 no_available_days = False
                 # Print a message
-                print('No days available within next 18 months.')
+                st.write('No days available within next 18 months.')
             else:
                 # Continue searching for available days in next month
                 browser.find_and_click(by=loc['BY'], value=loc['FORWARD'])
                 # Sum one iteration
                 iter_count += 1
                 # Print the count
-                print(f'Remaining attempts: {max_tries-iter_count}')
+                st.write(f'Remaining attempts: {max_tries-iter_count}')
                 # Wait until everything is loaded
                 time.sleep(2)
                 # Continue the loop
@@ -220,7 +219,7 @@ if __name__ == "__main__":
                 otp_ok[0].click()
 
                 # Print a message
-                print('Process succeed!')
+                st.write('Process succeed!')
     
     # Wait a long time to ensure the procces is ended
     time.sleep(10)
@@ -230,3 +229,41 @@ if __name__ == "__main__":
 
     # Then, end the script
     sys.exit()
+
+if __name__ == '__main__':
+    
+    """
+    #### 1. Load the configuration file
+    """
+    uploaded_file = st.file_uploader(
+        label='Load configuration file (user_data.ini)',
+        type='.ini',
+        help="If you don't know how to create the configuration file, please \
+              visit: https://github.com/hvignolo87/tito/blob/main/README.md"
+    )
+
+    """
+    #### 2. Do you want to set the hour check mode?
+    This mode enable automatic check of the hour. When 19hs (ART) comes, the bot is launched automatically.
+
+    If you don't want to wait, or just want to perform some tests, select ```no```.
+    """
+    check_hour = st.radio(
+        label="Enable hour check mode",
+        options=('Yes', 'No'),
+        horizontal=True
+    )
+
+    check_hour = True if check_hour == 'Yes' else False
+
+    """
+    #### 3. Run the bot
+    """
+    if st.button('Click here to run!') and uploaded_file:
+        uploaded_file_io = StringIO(uploaded_file.getvalue().decode('utf-8'))
+        try:
+            tito(uploaded_file_io, check_hour)
+        except:
+            st.write('Something went wrong, please try again later.')
+    else:
+        st.write('First complete the above steps.')

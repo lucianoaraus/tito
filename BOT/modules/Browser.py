@@ -1,5 +1,6 @@
 # Load useful classes
 import sys
+import os
 
 # Import Installer for missing packages
 if __name__ == '__main__':
@@ -105,6 +106,9 @@ class Browser:
 
         # Set the wait time
         self.wait_time = 5
+
+        # Avoid SSL Certificate verification
+        os.environ['WDM_SSL_VERIFY'] = '0'
 
         # Create the driver instance
         if not undetectable:
